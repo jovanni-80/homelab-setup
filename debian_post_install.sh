@@ -10,15 +10,11 @@ error_prefix='\033[41m ERROR \033[0m'
 info_prefix='\033[42m INFO  \033[0m'
 warn_prefix='\033[43m WARN  \033[0m'
 
-set expected_user="whitakeradm"
-set expected_hostname="homelab"
+set expected_user=""
+set expected_hostname=""
 set WIREGUARD_PORT="51820"
 
-# script should not be executable by non-sudo user
-if [[ "$USER" != "$expected_user" ]]; then
-  echo -e "$error_prefix User $expected_user needs to run this script with sudo!"
-  exit 1
-elif [ "$EUID" -ne 0 ]; then
+if [ "$EUID" -ne 0 ]; then
   echo -e "$error_prefix Please run with 'sudo'"
   echo "If you have not, first run: "
   echo "$ sudo apt update && sudo apt install sudo -y"
@@ -36,6 +32,7 @@ sudo apt install timeshift -y
 sudo apt install openssh-server -y
 sudo apt install neovim vim -y
 sudo apt install ufw -y
+sudo apt install fzf -y
 sudo apt install git -y
 sudo apt install tmux -y
 sudo apt install build-essential -y
@@ -143,6 +140,6 @@ echo 'alias f "nvim /home/$expected_user/.config/fish/config.fish"' > ~/.config/
 # @TODO: add fish configuration emplacement
 
 # set fish as default shell
-chsh -s $(which fish)
+chsh -s /usr/bin/fish
 
 # @TODO: add tmux configuration emplacement
