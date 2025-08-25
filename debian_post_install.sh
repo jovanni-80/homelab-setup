@@ -80,11 +80,6 @@ wget -P ~/.local/share/fonts https://github.com/ryanoasis/nerd-fonts/releases/do
   rm JetBrainsMono.zip &&
   fc-cache -fv
 
-echo -e "$info_prefix installing oh-my-fish"
-sleep 1
-# install oh my fish - also don't do this as root probably
-curl https://raw.githubusercontent.com/oh-my-fish/oh-my-fish/master/bin/install | fish
-
 echo -e "$info_prefix installing uv"
 sleep 1
 # install 'uv' for python projects
@@ -143,3 +138,9 @@ echo 'alias f "nvim /home/$expected_user/.config/fish/config.fish"' > ~/.config/
 chsh -s /usr/bin/fish
 
 # @TODO: add tmux configuration emplacement
+
+# install omf last...
+echo -e "$info_prefix installing oh-my-fish"
+sleep 1
+# install oh my fish - also don't do this as root probably
+curl https://raw.githubusercontent.com/oh-my-fish/oh-my-fish/master/bin/install | fish
