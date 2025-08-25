@@ -86,7 +86,7 @@ wget -P ~/.local/share/fonts https://github.com/ryanoasis/nerd-fonts/releases/do
 echo -e "$info_prefix installing oh-my-fish"
 sleep 1
 # install oh my fish - also don't do this as root probably
-curl -L https://get.oh-my.fish | fish
+curl https://raw.githubusercontent.com/oh-my-fish/oh-my-fish/master/bin/install | fish
 
 echo -e "$info_prefix installing uv"
 sleep 1
@@ -96,6 +96,7 @@ curl -LsSf https://astral.sh/uv/install.sh | sh
 echo -e "$info_prefix configuring timeshift to backup weekly"
 sleep 1
 # configure timeshift backups, sudo
+# @FIXME: /etc/timeshift/timeshift.json not found
 sed -i 's/"schedule_weekly": false/"schedule_weekly": true/' /etc/timeshift/timeshift.json
 
 echo -e "$info_prefix configuring uncomplicated firewall"
