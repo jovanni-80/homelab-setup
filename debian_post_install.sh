@@ -2,9 +2,9 @@
 # refer to: https://wiki.debian.org/DontBreakDebian
 # when deciding what to install/uninstall
 # Debian post-installation script to be run on Jos homeserver after fresh debian install
-# This script installs necessary packages, and additionally 
+# This script installs necessary packages, and additionally
 # Note: sudo should be setup before this ideally
-# 
+#
 
 set expected_user="whitakeradm"
 set expected_hostname="homelab"
@@ -12,15 +12,15 @@ set WIREGUARD_PORT="51820"
 
 # script should not be executable by non-sudo user
 if [[ "$USER" != "$expected_user" ]]; then
-	echo "User $expected_user needs to run this script with sudo!"
-	exit 1
-elif  [ "$EUID" -ne 0 ]; then
-	echo "Please run with 'sudo'"
-	echo "If you have not, first run: "
-	echo "$ sudo apt update && sudo apt install sudo -y"
-	echo "$ su"
-	echo "(as root)$ sudo adduser $expected_user sudo"
-	exit 1
+  echo "User $expected_user needs to run this script with sudo!"
+  exit 1
+elif [ "$EUID" -ne 0 ]; then
+  echo "Please run with 'sudo'"
+  echo "If you have not, first run: "
+  echo "$ sudo apt update && sudo apt install sudo -y"
+  echo "$ su"
+  echo "(as root)$ sudo adduser $expected_user sudo"
+  exit 1
 fi
 
 # PACKAGE INSTALLATIONS:
@@ -55,18 +55,21 @@ sudo chmod a+r /etc/apt/keyrings/docker.asc
 # Add the repository to Apt sources:
 echo \
   "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.asc] https://download.docker.com/linux/debian \
-  $(. /etc/os-release && echo "$VERSION_CODENAME") stable" | \
-  sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
+  $(. /etc/os-release && echo "$VERSION_CODENAME") stable" |
+  sudo tee /etc/apt/sources.list.d/docker.list >/dev/null
 sudo apt-get update
 sudo apt-get install docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin -y
 sudo docker run hello-world
 
+# @TODO: add dockerfile emplacement gitea, wireguard, dns/pihole maybe, minecraft server
+#
+
 # install nerdfonts - don't do this as root probably?
-wget -P ~/.local/share/fonts https://github.com/ryanoasis/nerd-fonts/releases/download/v3.4.0/JetBrainsMono.zip \
-&& cd ~/.local/share/fonts \
-&& unzip JetBrainsMono.zip \
-&& rm JetBrainsMono.zip \
-&& fc-cache -fv
+wget -P ~/.local/share/fonts https://github.com/ryanoasis/nerd-fonts/releases/download/v3.4.0/JetBrainsMono.zip &&
+  cd ~/.local/share/fonts &&
+  unzip JetBrainsMono.zip &&
+  rm JetBrainsMono.zip &&
+  fc-cache -fv
 
 # install oh my fish - also don't do this as root probably
 curl -L https://get.oh-my.fish | fish
@@ -109,9 +112,13 @@ sudo sysctl -p
 ufw enable
 
 # configure some aliases
-echo 'alias reboot "/sbin/reboot"' > ~/.config/fish/config.fish
-echo 'alias src "source /home/$expected_user/.config/fish/config.fish"' > ~/.config/fish/config.fish
-echo 'alias f "nvim /home/$expected_user/.config/fish/config.fish"' > ~/.config/fish/config.fish
+echo 'alias reboot "/sbin/reboot"' >~/.config/fish/config.fish
+echo 'alias src "source /home/$expected_user/.config/fish/config.fish"' >~/.config/fish/config.fish
+echo 'alias f "nvim /home/$expected_user/.config/fish/config.fish"' >~/.config/fish/config.fish
 
 # set fish as default shell
 chsh -s $(which fish)
+
+# @TODO: add fish configuration emplacement
+# @TODO: add tmux configuration emplacement
+
