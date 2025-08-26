@@ -156,3 +156,7 @@ fish -c "omf install gentoo; exit" 2>/dev/null || echo -e "$info_prefix Theme in
 # Fallback: Try installing theme again if first attempt failed
 sleep 2
 fish -c "omf install gentoo; omf theme gentoo; exit" 2>/dev/null
+
+echo -e "$info_prefix Finished Installation, exit back out to tty."
+sleep 3
+#logout
