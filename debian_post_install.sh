@@ -28,26 +28,26 @@ echo -e "$info_prefix Installing apt packages"
 sleep 1
 
 sudo apt update -y
-sudo apt install timeshift -y
-sudo apt install openssh-server -y
-sudo apt install neovim vim -y
-sudo apt install ufw -y
-sudo apt install fzf -y
-sudo apt install git -y
-sudo apt install tmux -y
-sudo apt install build-essential -y
-sudo apt install unzip -y
-sudo apt install fish -y
-sudo apt install zoxide -y
-sudo apt install fd-find -y
-sudo apt install ripgrep -y
-sudo apt install btop -y
-sudo apt install curl -y
-sudo apt install network-manager -y
-sudo apt install gdb -y
-sudo apt install nodejs -y
-sudo apt install npm -y
-sudo apt install python3 -y
+sudo apt install timeshift \
+openssh-server \
+neovim \
+vim \
+ufw \
+fzf \
+tmux \
+build-essential \
+unzip \
+fish \
+zoxide \
+fd-find \
+ripgrep \
+btop \
+curl \
+network-manager \
+gdb \
+nodejs \
+npm \
+python3 -y
 
 echo -e "$info_prefix Adding Docker GPG key and installing"
 sleep 1
