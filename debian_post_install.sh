@@ -142,11 +142,17 @@ chsh -s /usr/bin/fish
 # @TODO: add tmux configuration emplacement
 
 # install omf last...
+# @TODO: figure out how to get oh my fish to exit itself after installing
 echo -e "$info_prefix Installing oh-my-fish"
-sleep 1
-# install oh my fish - also don't do this as root probably
-curl https://raw.githubusercontent.com/oh-my-fish/oh-my-fish/master/bin/install | fish
+curl -L https://raw.githubusercontent.com/oh-my-fish/oh-my-fish/master/bin/install | fish -c "source /dev/stdin; exit"
+
+sleep 3
 
 echo -e "$info_prefix Configuring oh-my-fish"
-omf install gentoo
-omf theme gentoo
+
+# Install the gentoo theme
+fish -c "omf install gentoo; exit" 2>/dev/null || echo -e "$info_prefix Theme installation will be attempted again..."
+
+# Fallback: Try installing theme again if first attempt failed
+sleep 2
+fish -c "omf install gentoo; omf theme gentoo; exit" 2>/dev/null
