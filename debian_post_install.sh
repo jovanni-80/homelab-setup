@@ -14,12 +14,11 @@ set expected_user=""
 set expected_hostname=""
 set WIREGUARD_PORT="51820"
 
-if [ "$EUID" -ne 0 ]; then
-  echo -e "$error_prefix Please run with 'sudo'"
-  echo "If you have not, first run: "
-  echo "$ sudo apt update && sudo apt install sudo -y"
-  echo "$ su"
-  echo "(as root)$ sudo adduser $expected_user sudo"
+if [ "$expected_user" == "" ]; then
+  echo -e "$error_prefix Set expected_user variable in script before running."
+  exit 1
+elif [ "$expected_hostname" == "" ]; then
+  echo -e "$error_prefix Set expected_hostname variable in script before running."
   exit 1
 fi
 
@@ -140,7 +139,11 @@ chsh -s /usr/bin/fish
 # @TODO: add tmux configuration emplacement
 
 # install omf last...
-echo -e "$info_prefix installing oh-my-fish"
+echo -e "$info_prefix Installing oh-my-fish"
 sleep 1
 # install oh my fish - also don't do this as root probably
 curl https://raw.githubusercontent.com/oh-my-fish/oh-my-fish/master/bin/install | fish
+
+echo -e "$info_prefix Configuring oh-my-fish"
+omf install gentoo
+omf theme gentoo
