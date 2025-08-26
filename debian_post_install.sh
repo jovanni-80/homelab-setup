@@ -10,8 +10,8 @@ error_prefix='\033[41m ERROR \033[0m'
 info_prefix='\033[42m INFO  \033[0m'
 warn_prefix='\033[43m WARN  \033[0m'
 
-expected_user=""
-expected_hostname=""
+expected_user=$(whoami)
+expected_hostname="$HOSTNAME"
 WIREGUARD_PORT="51820"
 
 if [ "$expected_user" == "" ]; then
@@ -21,6 +21,9 @@ elif [ "$expected_hostname" == "" ]; then
   echo -e "$error_prefix Set expected_hostname variable in script before running."
   exit 1
 fi
+
+echo -e "$info_prefix Proceeding with user: [$expected_user] and Hostname: [$expected_hostname], Ctrl+C now to cancel..."
+sleep 4
 
 # PACKAGE INSTALLATIONS:
 echo -e "$info_prefix Installing apt packages"
