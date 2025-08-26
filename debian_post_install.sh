@@ -10,9 +10,9 @@ error_prefix='\033[41m ERROR \033[0m'
 info_prefix='\033[42m INFO  \033[0m'
 warn_prefix='\033[43m WARN  \033[0m'
 
-set expected_user=""
-set expected_hostname=""
-set WIREGUARD_PORT="51820"
+expected_user=""
+expected_hostname=""
+WIREGUARD_PORT="51820"
 
 if [ "$expected_user" == "" ]; then
   echo -e "$error_prefix Set expected_user variable in script before running."
