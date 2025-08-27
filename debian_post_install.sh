@@ -13,6 +13,9 @@ warn_prefix='\033[43m WARN  \033[0m'
 expected_user=$(whoami)
 expected_hostname="$HOSTNAME"
 WIREGUARD_PORT="51820"
+GITEA_WEB_PORT="3000"
+GITEA_SSH_PORT="222"
+MINECRAFT_PORT="25565"
 
 if [ "$expected_user" == "" ]; then
   echo -e "$error_prefix Set expected_user variable in script before running."
@@ -118,7 +121,18 @@ sudo ufw default allow outgoing
 
 sudo ufw allow ssh
 
+# allow wireguard
 sudo ufw allow $WIREGUARD_PORT/udp
+
+# Allow Gitea web interface
+sudo ufw allow $GITEA_WEB_PORT/tcp
+
+# Allow Gitea SSH
+sudo ufw allow $GITEA_SSH_PORT/tcp
+
+# Allow minecraft ports
+sudo ufw allow $MINECRAFT_PORT
+sudo ufw allow $MINECRAFT_PORT/tcp
 
 sudo echo 'net.ipv4.ip_forward=1' | sudo tee -a /etc/sysctl.conf
 # If using IPv6:
