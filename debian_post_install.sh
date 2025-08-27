@@ -146,9 +146,10 @@ sudo ufw enable
 echo -e "$info_prefix Configuring fish"
 sleep 1
 # configure some aliases
+echo 'alias f "nvim /home/$(whoami)/.config/fish/config.fish"' > ~/.config/fish/config.fish
 echo 'alias reboot "/sbin/reboot"' > ~/.config/fish/config.fish
-echo 'alias src "source /home/$expected_user/.config/fish/config.fish"' > ~/.config/fish/config.fish
-echo 'alias f "nvim /home/$expected_user/.config/fish/config.fish"' > ~/.config/fish/config.fish
+echo 'alias src "source /home/$(whoami)/.config/fish/config.fish"' > ~/.config/fish/config.fish
+echo 'alias fd "fdfind"' > ~/.config/fish/config.fish
 
 # @TODO: add fish configuration emplacement
 
