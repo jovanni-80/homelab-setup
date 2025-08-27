@@ -90,14 +90,20 @@ curl -LsSf https://astral.sh/uv/install.sh | sh
 echo -e "$info_prefix configuring timeshift to backup weekly"
 sleep 1
 
-# Ensure timeshift config file exists
+# Ensure timeshift config file exists and is valid
 if [ ! -f /etc/timeshift/timeshift.json ]; then
   echo -e "$warn_prefix timeshift.json not found, initializing timeshift..."
-  sudo timeshift --check
+  # This will prompt for setup if not configured
+  sudo timeshift --create --comments "Initial snapshot" --tags D
 fi
 
 if [ -f /etc/timeshift/timeshift.json ]; then
-  sudo sed -i 's/"schedule_weekly": false/"schedule_weekly": true/' /etc/timeshift/timeshift.json
+  # If "schedule_weekly" is missing, add it
+  if ! grep -q '"schedule_weekly"' /etc/timeshift/timeshift.json; then
+    sudo sed -i '1s|{|{"schedule_weekly": true,|' /etc/timeshift/timeshift.json
+  else
+    sudo sed -i 's/"schedule_weekly": false/"schedule_weekly": true/' /etc/timeshift/timeshift.json
+  fi
 else
   echo -e "$warn_prefix Could not configure timeshift: /etc/timeshift/timeshift.json still not found."
 fi
