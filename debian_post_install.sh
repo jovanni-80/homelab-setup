@@ -68,6 +68,7 @@ echo \
   sudo tee /etc/apt/sources.list.d/docker.list >/dev/null
 sudo apt-get update
 sudo apt-get install docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin -y
+sudo usermod -aG docker $expected_user
 sudo docker run hello-world
 
 # @TODO: add dockerfile emplacement gitea, wireguard, dns/pihole maybe, minecraft server
