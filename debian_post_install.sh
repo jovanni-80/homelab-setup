@@ -89,9 +89,18 @@ curl -LsSf https://astral.sh/uv/install.sh | sh
 
 echo -e "$info_prefix configuring timeshift to backup weekly"
 sleep 1
-# configure timeshift backups, sudo
-# @FIXME: /etc/timeshift/timeshift.json not found
-sed -i 's/"schedule_weekly": false/"schedule_weekly": true/' /etc/timeshift/timeshift.json
+
+# Ensure timeshift config file exists
+if [ ! -f /etc/timeshift/timeshift.json ]; then
+  echo -e "$warn_prefix timeshift.json not found, initializing timeshift..."
+  sudo timeshift --check
+fi
+
+if [ -f /etc/timeshift/timeshift.json ]; then
+  sudo sed -i 's/"schedule_weekly": false/"schedule_weekly": true/' /etc/timeshift/timeshift.json
+else
+  echo -e "$warn_prefix Could not configure timeshift: /etc/timeshift/timeshift.json still not found."
+fi
 
 echo -e "$info_prefix configuring uncomplicated firewall"
 sleep 1
@@ -157,6 +166,6 @@ fish -c "omf install gentoo; exit" 2>/dev/null || echo -e "$info_prefix Theme in
 sleep 2
 fish -c "omf install gentoo; omf theme gentoo; exit" 2>/dev/null
 
-echo -e "$info_prefix Finished Installation, exit back out to tty."
+echo -e "$info_prefix Finished Installation"
 sleep 3
-#logout
+exec fish
