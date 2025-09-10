@@ -25,8 +25,8 @@ $ git clone https://github.com/jovanni-80/homelab-setup.git
 - start container: `docker compose up -d`
 
 ### Setting up a VM to run services in
-- sudo qemu-img create -f qcow2 /var/lib/libvirt/images/<VM_NAME>.qcow2 <STORAGE_SIZE_IN_GB>G
-- Run virt-install:
+- `sudo qemu-img create -f qcow2 /var/lib/libvirt/images/<VM_NAME>.qcow2 <STORAGE_SIZE_IN_GB>G`
+- Run `virt-install`:
 ```shell
 sudo virt-install \
     --name <VM_NAME> \
@@ -45,3 +45,8 @@ sudo virt-install \
 - to connect after vm is started run `virt-viewer --connect qemu:///system services-vm`
     - annoyingly on MacOS, do this through XQuartz terminal which sets `$DISPLAY` when you ssh 
 - to make vm start automatically: `virsh autostart <VM_NAME>`
+- Forwarding traffic from VM **ON HOST**:
+- `sudo ufw allow in on virbr0 out on eth0`
+- `sudo ufw allow in on eth0 out on virbr0`
+- Allowing outgoing data from services **ON VM**:
+- `sudo ufw allow <port>/<protocol>`
