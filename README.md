@@ -23,3 +23,25 @@ $ git clone https://github.com/jovanni-80/homelab-setup.git
   - `docker ps`, `docker compose down`, `docker logs <IMAGE_NAME>`
   - Depending on image, may need to add additional configuration files
 - start container: `docker compose up -d`
+
+### Setting up a VM to run services in
+- sudo qemu-img create -f qcow2 /var/lib/libvirt/images/<VM_NAME>.qcow2 <STORAGE_SIZE_IN_GB>G
+- Run virt-install:
+```shell
+sudo virt-install \
+    --name <VM_NAME> \
+    --ram <RAM_IN_MB> \
+    --disk path=/var/lib/libvirt/images/<VM_NAME>.qcow2,size=<SIZE_IN_GB> \
+    --vcpus <NUM_CORES> \
+    --os-variant debian12 \
+    --network bridge=virbr0 \
+    --graphics none \
+    --console pty,target_type=serial \
+    --location http://deb.debian.org/debian/dists/trixie/main/installer-amd64/ \
+    --extra-args 'console=tty50,1115200n8 serial'
+```
+- Make sure X11Forwarding is enabled in `/etc/ssh/sshd_config` (might need to remove ~/.Xauthority and reconnect to re-init it)
+- to get ip of vm: `sudo virsh net-dhcp-leases default`
+- to connect after vm is started run `virt-viewer --connect qemu:///system services-vm`
+    - annoyingly on MacOS, do this through XQuartz terminal which sets `$DISPLAY` when you ssh 
+- to make vm start automatically: `virsh autostart <VM_NAME>`

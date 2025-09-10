@@ -47,12 +47,25 @@ zoxide \
 fd-find \
 ripgrep \
 btop \
+htop \
 curl \
 network-manager \
 gdb \
 nodejs \
 npm \
+lsd \
+qemu-kvm \
+libvirt-daemon-system \
+libvirt-clients \
+bridge-utils \
+iptables-persistent \
+virt-manager \
+virt-viewer \
 python3 -y
+
+echo -e "$info_prefix Enabling libvirtd"
+sudo systemctl enable libvirtd && sudo systemctl start libvirtd
+sudo usermod -a -G libvirt $USER
 
 echo -e "$info_prefix Adding Docker GPG key and installing"
 sleep 1
@@ -116,6 +129,7 @@ echo -e "$info_prefix configuring uncomplicated firewall"
 sleep 1
 
 # configure (uncomplicated) firewall
+# @TODO: allow for traffic to pass from VM (virbr0) to (eth0) (add --vm option that skips this step? or separate additional scripts?)
 sudo ufw default deny incoming
 sudo ufw default allow outgoing
 
@@ -181,12 +195,12 @@ sleep 3
 
 echo -e "$info_prefix Configuring oh-my-fish"
 
-# Install the gentoo theme
-fish -c "omf install gentoo; exit" 2>/dev/null || echo -e "$info_prefix Theme installation will be attempted again..."
+# Install the kawasaki theme
+fish -c "omf install kawasaki; exit" 2>/dev/null || echo -e "$info_prefix Theme installation will be attempted again..."
 
 # Fallback: Try installing theme again if first attempt failed
 sleep 2
-fish -c "omf install gentoo; omf theme gentoo; exit" 2>/dev/null
+fish -c "omf install kawasaki; omf theme kawasaki; exit" 2>/dev/null
 
 echo -e "$info_prefix Finished Installation"
 sleep 3
