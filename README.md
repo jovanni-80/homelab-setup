@@ -49,4 +49,18 @@ sudo virt-install \
 - `sudo ufw allow in on virbr0 out on eth0`
 - `sudo ufw allow in on eth0 out on virbr0`
 - Allowing outgoing data from services **ON VM**:
+- update `/etc/ufw/before.rules` with the following initial commands:
+```bash
+*nat
+:PREROUTING ACCEPT [0:0]
+:POSTROUTING ACCEPT [0:0]
+
+# ADD CUSTOM IPS TO FORWARD HERE
+-A PREROUTING -p tcp --dport <FORWARDED_IP> -j DNAT --to-destination <VM_IP>:<VM_PORT>
+...
+
+-A POSTROUTING -s 192.168.122.0/24 -j MASQUERADE
+
+COMMIT
+```
 - `sudo ufw allow <port>/<protocol>`
