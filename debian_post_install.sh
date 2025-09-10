@@ -13,9 +13,10 @@ warn_prefix='\033[43m WARN  \033[0m'
 expected_user=$(whoami)
 expected_hostname="$HOSTNAME"
 WIREGUARD_PORT="51820"
-GITEA_WEB_PORT="3000"
+GITEA_WEB_PORT="3030"
 GITEA_SSH_PORT="222"
 MINECRAFT_PORT="25565"
+COCKPIT_PORT="9090"
 
 if [ "$expected_user" == "" ]; then
   echo -e "$error_prefix Set expected_user variable in script before running."
@@ -53,6 +54,8 @@ network-manager \
 gdb \
 nodejs \
 npm \
+cockpit \
+cockpit-machines \
 lsd \
 qemu-kvm \
 libvirt-daemon-system \
@@ -65,7 +68,9 @@ python3 -y
 
 echo -e "$info_prefix Enabling libvirtd"
 sudo systemctl enable libvirtd && sudo systemctl start libvirtd
+sudo systemctl enable --now cockpit.socket
 sudo usermod -a -G libvirt $USER
+curl -L -o dockermanager.deb https://github.com/chrisjbawden/cockpit-dockermanager/releases/download/latest/dockermanager.deb && sudo dpkg -i dockermanager.deb
 
 echo -e "$info_prefix Adding Docker GPG key and installing"
 sleep 1
@@ -143,6 +148,9 @@ sudo ufw allow $GITEA_WEB_PORT/tcp
 
 # Allow Gitea SSH
 sudo ufw allow $GITEA_SSH_PORT/tcp
+
+# Allow cockpit
+sudo ufw allow $COCKPIT_PORT/tcp
 
 # Allow minecraft ports
 sudo ufw allow $MINECRAFT_PORT
