@@ -26,6 +26,7 @@ $ git clone https://github.com/jovanni-80/homelab-setup.git
 
 ### Setting up a VM to run services in
 - `sudo qemu-img create -f qcow2 /var/lib/libvirt/images/<VM_NAME>.qcow2 <STORAGE_SIZE_IN_GB>G`
+- setup virsh default network: `sudo virsh net-start default && sudo virsh net-autostart default`
 - Run `virt-install`:
 ```shell
 sudo virt-install \
