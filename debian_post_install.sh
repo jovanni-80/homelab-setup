@@ -61,7 +61,6 @@ qemu-kvm \
 libvirt-daemon-system \
 libvirt-clients \
 bridge-utils \
-iptables-persistent \
 virt-manager \
 virt-viewer \
 python3 -y
