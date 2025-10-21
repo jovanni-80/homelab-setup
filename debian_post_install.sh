@@ -11,12 +11,14 @@ info_prefix='\033[42m INFO  \033[0m'
 warn_prefix='\033[43m WARN  \033[0m'
 
 expected_user=$(whoami)
+USER_HOMEDIR="/home/$expected_user/"
 expected_hostname="$HOSTNAME"
 WIREGUARD_PORT="51820"
 GITEA_WEB_PORT="3030"
 GITEA_SSH_PORT="222"
 MINECRAFT_PORT="25565"
 COCKPIT_PORT="9090"
+SCRIPT_DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
 
 validate_environment() {
   if [ "$expected_user" == "" ]; then
@@ -38,7 +40,6 @@ install_apt_packages() {
   sudo apt update -y
   sudo apt install timeshift \
   openssh-server \
-  neovim \
   vim \
   ufw \
   fzf \
@@ -66,6 +67,33 @@ install_apt_packages() {
   virt-manager \
   virt-viewer \
   python3 -y
+}
+
+install_neovim() {
+  echo -e "$info_prefix Installing Neovim latest (required for LazyVim)"
+  sleep 1
+  
+  # Remove old neovim if installed
+  sudo apt remove neovim -y 2>/dev/null || true
+  
+  # Download and extract Neovim
+  cd /tmp
+  curl -LO https://github.com/neovim/neovim/releases/latest/download/nvim-linux64.tar.gz
+  sudo tar -C /opt -xzf nvim-linux64.tar.gz
+  
+  # Create symlink
+  sudo ln -sf /opt/nvim-linux64/bin/nvim /usr/local/bin/nvim
+  
+  # Clean up
+  rm nvim-linux64.tar.gz
+  
+  # Verify installation
+  if /usr/local/bin/nvim --version | head -1; then
+    echo -e "$info_prefix Neovim installed successfully"
+  else
+    echo -e "$error_prefix Failed to install Neovim"
+    exit 1
+  fi
 }
 
 setup_virtualization() {
@@ -105,8 +133,8 @@ install_nerdfont() {
   echo -e "$info_prefix Installing nerdfont"
   sleep 1
   # install nerdfonts - don't do this as root probably?
-  wget -P ~/.local/share/fonts https://github.com/ryanoasis/nerd-fonts/releases/download/v3.4.0/JetBrainsMono.zip &&
-    cd ~/.local/share/fonts &&
+  wget -P $USER_HOMEDIR/.local/share/fonts https://github.com/ryanoasis/nerd-fonts/releases/download/v3.4.0/JetBrainsMono.zip &&
+    cd $USER_HOMEDIR/.local/share/fonts &&
     unzip JetBrainsMono.zip &&
     rm JetBrainsMono.zip &&
     fc-cache -fv
@@ -197,10 +225,10 @@ configure_fish() {
   echo -e "$info_prefix Configuring fish"
   sleep 1
   # configure some aliases
-  echo 'alias f "nvim /home/$(whoami)/.config/fish/config.fish"' > ~/.config/fish/config.fish
-  echo 'alias reboot "/sbin/reboot"' > ~/.config/fish/config.fish
-  echo 'alias src "source /home/$(whoami)/.config/fish/config.fish"' > ~/.config/fish/config.fish
-  echo 'alias fd "fdfind"' > ~/.config/fish/config.fish
+  echo 'alias f "nvim /home/$(whoami)/.config/fish/config.fish"' > $USER_HOMEDIR/.config/fish/config.fish
+  echo 'alias reboot "/sbin/reboot"' > $USER_HOMEDIR/.config/fish/config.fish
+  echo 'alias src "source /home/$(whoami)/.config/fish/config.fish"' > $USER_HOMEDIR/.config/fish/config.fish
+  echo 'alias fd "fdfind"' > $USER_HOMEDIR/.config/fish/config.fish
 
   # @TODO: add fish configuration emplacement
 
@@ -220,24 +248,24 @@ install_lazyvim() {
   sleep 1
   
   # Create nvim config directory
-  mkdir -p ~/.config/nvim
+  mkdir -p $USER_HOMEDIR/.config/nvim
   
   # Clone LazyVim starter config
-  git clone https://github.com/LazyVim/starter ~/.config/nvim
+  git clone https://github.com/LazyVim/starter $USER_HOMEDIR/.config/nvim
   
   # Remove the .git directory to make it your own config
-  rm -rf ~/.config/nvim/.git
+  rm -rf $USER_HOMEDIR/.config/nvim/.git
   
   # Create plugins directory
-  mkdir -p ~/.config/nvim/lua/plugins
+  mkdir -p $USER_HOMEDIR/.config/nvim/lua/plugins
   
   # Copy plugin files from script directory to nvim config
-  if [ -d "./config/nvim/lua/plugins" ]; then
+  if [ -d "$SCRIPT_DIR/config/nvim/lua/plugins" ]; then
     echo -e "$info_prefix Copying plugin configurations..."
-    cp -r ./config/nvim/lua/plugins/* ~/.config/nvim/lua/plugins/
+    cp -r $SCRIPT_DIR/config/nvim/lua/plugins/* $USER_HOMEDIR/.config/nvim/lua/plugins/
     echo -e "$info_prefix Plugin configurations copied successfully"
   else
-    echo -e "$warn_prefix Plugin directory ./config/nvim/lua/plugins not found, skipping plugin copy"
+    echo -e "$warn_prefix Plugin directory $SCRIPT_DIR/config/nvim/lua/plugins not found, skipping plugin copy"
   fi
   
   echo -e "$info_prefix LazyVim installation complete. Run 'nvim' to finish setup."
@@ -248,6 +276,7 @@ install_lazyvim() {
 # Main execution
 validate_environment
 install_apt_packages
+install_neovim
 setup_virtualization
 install_docker
 install_nerdfont
