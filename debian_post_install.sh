@@ -70,23 +70,23 @@ install_apt_packages() {
 }
 
 install_neovim() {
-  echo -e "$info_prefix Installing Neovim latest (required for LazyVim)"
+  echo -e "$info_prefix Installing Neovim v0.11.4+ (required for LazyVim)"
   sleep 1
-
+  
   # Remove old neovim if installed
   sudo apt remove neovim -y 2>/dev/null || true
-
+  
   # Download and extract Neovim
   cd /tmp
   curl -LO https://github.com/neovim/neovim/releases/latest/download/nvim-linux64.tar.gz
   sudo tar -C /opt -xzf nvim-linux64.tar.gz
-
+  
   # Create symlink
   sudo ln -sf /opt/nvim-linux64/bin/nvim /usr/local/bin/nvim
-
+  
   # Clean up
   rm nvim-linux64.tar.gz
-
+  
   # Verify installation
   if /usr/local/bin/nvim --version | head -1; then
     echo -e "$info_prefix Neovim installed successfully"
