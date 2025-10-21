@@ -18,7 +18,7 @@ GITEA_WEB_PORT="3030"
 GITEA_SSH_PORT="222"
 MINECRAFT_PORT="25565"
 COCKPIT_PORT="9090"
-SCRIPT_DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
+SCRIPT_DIR=$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" &>/dev/null && pwd)
 
 validate_environment() {
   if [ "$expected_user" == "" ]; then
@@ -39,54 +39,54 @@ install_apt_packages() {
 
   sudo apt update -y
   sudo apt install timeshift \
-  openssh-server \
-  vim \
-  ufw \
-  fzf \
-  tmux \
-  build-essential \
-  unzip \
-  fish \
-  zoxide \
-  fd-find \
-  ripgrep \
-  btop \
-  htop \
-  curl \
-  network-manager \
-  gdb \
-  nodejs \
-  npm \
-  cockpit \
-  cockpit-machines \
-  lsd \
-  qemu-kvm \
-  libvirt-daemon-system \
-  libvirt-clients \
-  bridge-utils \
-  virt-manager \
-  virt-viewer \
-  python3 -y
+    openssh-server \
+    vim \
+    ufw \
+    fzf \
+    tmux \
+    build-essential \
+    unzip \
+    fish \
+    zoxide \
+    fd-find \
+    ripgrep \
+    btop \
+    htop \
+    curl \
+    network-manager \
+    gdb \
+    nodejs \
+    npm \
+    cockpit \
+    cockpit-machines \
+    lsd \
+    qemu-kvm \
+    libvirt-daemon-system \
+    libvirt-clients \
+    bridge-utils \
+    virt-manager \
+    virt-viewer \
+    python3 -y
 }
 
 install_neovim() {
   echo -e "$info_prefix Installing Neovim latest (required for LazyVim)"
   sleep 1
-  
+
   # Remove old neovim if installed
   sudo apt remove neovim -y 2>/dev/null || true
-  
+
   # Download and extract Neovim
   cd /tmp
   curl -LO https://github.com/neovim/neovim/releases/latest/download/nvim-linux64.tar.gz
   sudo tar -C /opt -xzf nvim-linux64.tar.gz
-  
+
   # Create symlink
   sudo ln -sf /opt/nvim-linux64/bin/nvim /usr/local/bin/nvim
-  
+
   # Clean up
   rm nvim-linux64.tar.gz
-  
+
   # Verify installation
   if /usr/local/bin/nvim --version | head -1; then
     echo -e "$info_prefix Neovim installed successfully"
@@ -225,10 +225,10 @@ configure_fish() {
   echo -e "$info_prefix Configuring fish"
   sleep 1
   # configure some aliases
-  echo 'alias f "nvim /home/$(whoami)/.config/fish/config.fish"' > $USER_HOMEDIR/.config/fish/config.fish
-  echo 'alias reboot "/sbin/reboot"' > $USER_HOMEDIR/.config/fish/config.fish
-  echo 'alias src "source /home/$(whoami)/.config/fish/config.fish"' > $USER_HOMEDIR/.config/fish/config.fish
-  echo 'alias fd "fdfind"' > $USER_HOMEDIR/.config/fish/config.fish
+  echo 'alias f "nvim /home/$(whoami)/.config/fish/config.fish"' >$USER_HOMEDIR/.config/fish/config.fish
+  echo 'alias reboot "/sbin/reboot"' >$USER_HOMEDIR/.config/fish/config.fish
+  echo 'alias src "source /home/$(whoami)/.config/fish/config.fish"' >$USER_HOMEDIR/.config/fish/config.fish
+  echo 'alias fd "fdfind"' >$USER_HOMEDIR/.config/fish/config.fish
 
   # @TODO: add fish configuration emplacement
 
@@ -246,19 +246,19 @@ install_fisher() {
 install_lazyvim() {
   echo -e "$info_prefix Installing LazyVim and configuring plugins"
   sleep 1
-  
+
   # Create nvim config directory
   mkdir -p $USER_HOMEDIR/.config/nvim
-  
+
   # Clone LazyVim starter config
   git clone https://github.com/LazyVim/starter $USER_HOMEDIR/.config/nvim
-  
+
   # Remove the .git directory to make it your own config
   rm -rf $USER_HOMEDIR/.config/nvim/.git
-  
+
   # Create plugins directory
   mkdir -p $USER_HOMEDIR/.config/nvim/lua/plugins
-  
+
   # Copy plugin files from script directory to nvim config
   if [ -d "$SCRIPT_DIR/config/nvim/lua/plugins" ]; then
     echo -e "$info_prefix Copying plugin configurations..."
@@ -267,7 +267,7 @@ install_lazyvim() {
   else
     echo -e "$warn_prefix Plugin directory $SCRIPT_DIR/config/nvim/lua/plugins not found, skipping plugin copy"
   fi
-  
+
   echo -e "$info_prefix LazyVim installation complete. Run 'nvim' to finish setup."
 }
 
@@ -290,3 +290,4 @@ install_lazyvim
 echo -e "$info_prefix Finished Installation"
 sleep 3
 exec fish
+
