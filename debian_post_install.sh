@@ -78,7 +78,15 @@ install_neovim() {
   
   # Download and extract Neovim
   cd /tmp
-  curl -LO https://github.com/neovim/neovim/releases/latest/download/nvim-linux64.tar.gz
+  nvim_url="https://github.com/neovim/neovim/releases/latest/download/nvim-linux-x86_64.tar.gz"
+
+  # if arch system, update url to arm64
+  ARCH=$(uname -m)
+  if [[ "$ARCH"  == "aarch64" ]]; then
+    nvim_url="https://github.com/neovim/neovim/releases/latest/download/nvim-linux-arch64.tar.gz"
+  fi
+
+  curl -LO $nvim_url
   sudo tar -C /opt -xzf nvim-linux64.tar.gz
   
   # Create symlink
