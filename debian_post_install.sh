@@ -41,6 +41,8 @@ install_apt_packages() {
   sudo apt install timeshift \
     openssh-server \
     vim \
+    clangd \
+    clang-tools \
     ufw \
     fzf \
     tmux \
@@ -72,29 +74,29 @@ install_apt_packages() {
 install_neovim() {
   echo -e "$info_prefix Installing Neovim v0.11.4+ (required for LazyVim)"
   sleep 1
-  
+
   # Remove old neovim if installed
   sudo apt remove neovim -y 2>/dev/null || true
-  
+
   # Download and extract Neovim
   cd /tmp
   nvim_url="https://github.com/neovim/neovim/releases/latest/download/nvim-linux-x86_64.tar.gz"
 
   # if arch system, update url to arm64
   ARCH=$(uname -m)
-  if [[ "$ARCH"  == "aarch64" ]]; then
+  if [[ "$ARCH" == "aarch64" ]]; then
     nvim_url="https://github.com/neovim/neovim/releases/latest/download/nvim-linux-arch64.tar.gz"
   fi
 
   curl -LO $nvim_url
   sudo tar -C /opt -xzf nvim-linux64.tar.gz
-  
+
   # Create symlink
   sudo ln -sf /opt/nvim-linux64/bin/nvim /usr/local/bin/nvim
-  
+
   # Clean up
   rm nvim-linux64.tar.gz
-  
+
   # Verify installation
   if /usr/local/bin/nvim --version | head -1; then
     echo -e "$info_prefix Neovim installed successfully"
@@ -279,6 +281,10 @@ install_lazyvim() {
   echo -e "$info_prefix LazyVim installation complete. Run 'nvim' to finish setup."
 }
 
+install_rust() {
+  curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
+}
+
 # @TODO: add tmux configuration emplacement
 
 # Main execution
@@ -294,8 +300,8 @@ configure_firewall
 configure_fish
 install_fisher
 install_lazyvim
+install_rust
 
 echo -e "$info_prefix Finished Installation"
 sleep 3
 exec fish
-
